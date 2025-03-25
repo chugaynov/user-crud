@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "ms-health"
+version = "0.1.0"
+description = ""
+authors = ["Aleksandr Chugaynov"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+uvicorn = "^0.34.0"
+pydantic-settings = "^2.8.1"
+fastapi = "^0.115.11"
+starlette = "^0.46.1"
+logging = "^0.4.9.6"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

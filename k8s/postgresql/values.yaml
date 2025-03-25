@@ -1,0 +1,41 @@
+global:
+  postgresql:
+    auth:
+      username: postgres
+      password: postgres
+      database: db_user_crud
+persistence:
+  enabled: true
+  storageClass: "standard"
+  size: 100Mi
+  primary:
+    podSecurityContext:
+      enabled: true
+      fsGroup: 1001  # Группа, которая будет владеть данными
+    containerSecurityContext:
+      enabled: true
+      runAsUser: 1001  # Пользователь, под которым будет работать контейнер
+volumePermissions:
+    enabled: true
+primary:
+  podSecurityContext:
+    enabled: true
+    fsGroup: 1001  # Группа, которая будет владеть данными
+  containerSecurityContext:
+    enabled: true
+    runAsUser: 1001  # Пользователь, под которым будет работать контейнер
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "500m"
+    limits:
+      memory: "1Gi"
+      cpu: "1"
+readReplicas:
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "250m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
