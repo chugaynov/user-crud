@@ -8,7 +8,7 @@ Base = declarative_base()
 class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, index=True)
-    username = Column(String(256), unique=True, index=True)
+    userName = Column(String(256), unique=True, index=True)
     firstName = Column(String, nullable=False)
     lastName = Column(String, nullable=False)
     email = Column(String, unique=True, nullable=False)
@@ -16,7 +16,7 @@ class User(Base):
 
 # Pydantic модель
 class UserCreate(BaseModel):
-    username: str = Field(..., max_length=256)
+    userName: str = Field(..., max_length=256)
     firstName: str
     lastName: str
     email: EmailStr
