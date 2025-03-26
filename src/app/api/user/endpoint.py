@@ -3,7 +3,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from app.api.user.response import User, UserCreate, UserResponse
 from app.common.database import Database
 from app.config.settings import settings
-from sqlalchemy.exc import IntegrityError  # Импортируем исключение SQLAlchemy
+from sqlalchemy.exc import IntegrityError
 
 router = APIRouter()
 
@@ -12,8 +12,9 @@ DB_PASSWORD = os.getenv("DB_PASSWORD", settings.DB.PASSWORD)
 DB_HOST = os.getenv("DB_HOST", settings.DB.HOST)
 DB_NAME = os.getenv("DB_NAME", settings.DB.NAME)
 
-# DATABASE_URL = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
-DATABASE_URL = f"postgresql://postgres:{DB_PASSWORD}@{DB_HOST}/appdb"
+DATABASE_URL = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
+# НЕБЕЗОПАСНО (только для локального тестирования)
+# DATABASE_URL = f"postgresql://postgres:{DB_PASSWORD}@{DB_HOST}/appdb"
 
 db_instance = Database(DATABASE_URL)
 
