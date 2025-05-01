@@ -1,27 +1,15 @@
 from pydantic import BaseModel, EmailStr, Field
-from sqlalchemy import Column, Integer, String
-from sqlalchemy.orm import declarative_base
+from app.schemas.internal import DecimalFloat, InternalModel
+from pydantic.fields import Field
 
-Base = declarative_base()
 
-# Модель данных
-class User(Base):
-    __tablename__ = "users"
-    id = Column(Integer, primary_key=True, index=True)
-    userName = Column(String(256), unique=True, index=True)
-    firstName = Column(String, nullable=False)
-    lastName = Column(String, nullable=False)
-    email = Column(String, unique=True, nullable=False)
-    phone = Column(String, nullable=False)
-
-# Pydantic модель
-class UserCreate(BaseModel):
-    userName: str = Field(..., max_length=256)
-    firstName: str
-    lastName: str
+class UserScheme(InternalModel):
+    userName: str = Field(title="User login", examples=["chugaynov"])
+    firstName: str = Field(title="Fist name", examples=["Aleksander"])
+    lastName: str = Field(title="Last name", examples=["Chugaynov"])
     email: EmailStr
-    phone: str
+    phone: str = Field(title="Phone number", examples=["+79123456789"])
 
 
-class UserResponse(UserCreate):
-    id: int
+class UserIdScheme(InternalModel):
+    id: int = Field(title="User unique ID", examples=[23])

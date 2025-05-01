@@ -10,18 +10,18 @@ docker buildx build --platform linux/amd64 -t achugaynov/user-crud:v1.0 . --push
 ## Установка БД из Helm
 Если _kubectl get storageclass_ не вернул ничего, нужно добавить свой storageclass
 ```shell
-kubectl apply -f k8s/storageclass.yaml
+kubectl apply -f k8s/postgresql/storageclass.yaml
 ```
 
 Если динамическое provisioner'ы недоступны, создайте статический PV
 ```shell
-kubectl apply -f k8s/pv-pvc.yaml
+kubectl apply -f k8s/postgresql/pv-pvc.yaml
 ```
 
 Установка
 ```shell
 helm repo add bitnami https://charts.bitnami.com/bitnami
-helm install db bitnami/postgresql -f k8s/values.yaml
+helm install db bitnami/postgresql -f k8s/postgresql/values.yaml
 ```
 
 Переустановка при внесении изменений в values.yaml

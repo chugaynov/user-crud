@@ -1,0 +1,263 @@
+openapi: 3.0.0
+info:
+  description: |
+    REST API
+  version: "1.0.0"
+  title: CRUD Service
+  contact:
+    email: achugaynov@gmail.com
+servers:
+  - description: Server for testing
+    url: http://arch-homework.kalk.pro/
+tags:
+  - name: user
+    description: Create/Read/Update/Delete user operations.
+paths:
+  /user:
+    post:
+      tags:
+        - user
+      description: This can only be done by the logged in user.
+      operationId: createUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+            examples:
+              sample-user:
+                summary: Example
+                value:
+                  userName: chugaynov
+                  firstName: Aleksandr
+                  lastName: Chugaynov
+                  email: achugaynov@gmail.com
+                  phone: '+79003332211'
+        required: true
+      responses:
+        201:
+          description: Successfully create user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserId'
+              examples:
+                sample-response:
+                  summary: Example
+                  value:
+                    id: 23
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        409:
+          description: User already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        502:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /user/{userId}:
+    parameters:
+    - name: userId
+      in: path
+      description: ID of user
+      required: true
+      schema:
+        type: integer
+        format: int64
+    get:
+      tags:
+        - user
+      description: Returns a user found by id
+      operationId: getUserById
+      responses:
+        200:
+          description: User information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+        - user
+      description: deletes a single user based on the ID supplied
+      operationId: deleteUserById
+      responses:
+        204:
+          description: User deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      tags:
+        - user
+      description: Update user by User ID
+      operationId: updateUserById
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+            examples:
+              sample-user:
+                summary: Example
+                value:
+                  firstName: Ivan
+                  lastName: Ivanov
+                  email: ivan@gmail.com
+                  phone: '+71004242424'
+
+      responses:
+        200:
+          description: User deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    UserId:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        userName:
+          type: string
+          maxLength: 256
+        firstName:
+          type: string
+          maxLength: 256
+        lastName:
+          type: string
+          maxLength: 256
+        email:
+          type: string
+          format: email
+          maxLength: 256
+        phone:
+          type: string
+          format: phone
+          maxLength: 256
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+
+  requestBodies:
+    UserArray:
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/User'
+      description: List of user object
+      required: true
