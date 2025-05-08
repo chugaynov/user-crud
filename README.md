@@ -102,3 +102,13 @@ kubectl apply -f k8s/pv-pvc.yaml
 ```shell
 newman run otus-app-health.postman_collection.json
 ```
+
+# Запуск теста
+```shell
+PYTHONPATH=src pytest
+```
+
+# Запуск теста с выводом print из фикстур
+```shell
+PYTHONPATH=src pytest -s
+```

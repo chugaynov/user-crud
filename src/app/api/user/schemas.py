@@ -1,6 +1,6 @@
-from pydantic import BaseModel, EmailStr, Field
-from app.schemas.internal import DecimalFloat, InternalModel
+from pydantic import EmailStr
 from pydantic.fields import Field
+from app.schemas.internal import DecimalFloat, InternalModel
 
 
 class UserScheme(InternalModel):

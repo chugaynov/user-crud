@@ -1,31 +1,16 @@
-import os
 from fastapi import APIRouter, HTTPException, Depends
-from app.api.user.database import User
-from app.api.user.response import UserScheme, UserIdScheme
-from app.common.database import Database
-from app.config.settings import settings
+from app.api.user.models import User
+from app.api.user.schemas import UserScheme, UserIdScheme
 from sqlalchemy.exc import IntegrityError
+from app.common.database import engine
+
 
 router = APIRouter()
 
-DB_USER = os.getenv("DB_USER", settings.DB.USER)
-DB_PASSWORD = os.getenv("DB_PASSWORD", settings.DB.PASSWORD)
-DB_HOST = os.getenv("DB_HOST", settings.DB.HOST)
-DB_NAME = os.getenv("DB_NAME", settings.DB.NAME)
-
-DATABASE_URL = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
-# # NOT SECURED (local tests only)
-# DATABASE_URL = f"postgresql://postgres:{DB_PASSWORD}@{DB_HOST}/appdb"
-
-db_instance = Database(DATABASE_URL)
-
 
 def get_db():
-    db = db_instance.get_session()
-    try:
-        yield db
-    finally:
-        db.close()
+    with engine.get_session() as session:
+        yield session
 
 
 @router.post("/user", response_model=UserIdScheme, status_code=201)
