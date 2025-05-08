@@ -2,14 +2,14 @@ from fastapi import APIRouter, HTTPException, Depends
 from app.api.user.models import User
 from app.api.user.schemas import UserScheme, UserIdScheme
 from sqlalchemy.exc import IntegrityError
-from app.common.database import engine
+from app.common.database import Database
 
 
 router = APIRouter()
 
 
 def get_db():
-    with engine.get_session() as session:
+    with Database().get_session() as session:
         yield session
 
 

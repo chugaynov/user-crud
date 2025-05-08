@@ -1,18 +1,15 @@
 import pytest
+import time
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy.orm import sessionmaker
 
-from app.common.database import declarative_base
+from app.common.database import Database, Base
 from app.main import prepare_app
 from app.api.dependencies import get_db
 
 from docker import from_env
-
-Base = declarative_base()
-from app.api.user.models import User
 
 
 DOCKER_POSTGRESQL_EXTERNAL_PORT = 52432
@@ -44,13 +41,12 @@ def postgres_container(docker_client):
         for _ in range(30):
             try:
                 dsn = f"postgresql://testuser:testpassword@localhost:{port}/testdb"
-                engine = create_engine(dsn)
+                engine = Database(dsn).get_engine()
                 with engine.connect() as conn:
                     result = conn.execute("SELECT 1")
                     print(f"Database is ready: {result.scalar()}")
                 break
             except Exception:
-                import time
                 time.sleep(1)
 
         if not engine:
@@ -66,7 +62,7 @@ def postgres_container(docker_client):
 @pytest.fixture(scope="function")
 def db_engine(postgres_container):
     dsn = f"postgresql://testuser:testpassword@localhost:{port}/testdb"
-    engine = create_engine(dsn)
+    engine = Database(dsn).get_engine()
     Base.metadata.create_all(engine)  # Create all tables
     yield engine
     Base.metadata.drop_all(engine)  # Remove tables after test
