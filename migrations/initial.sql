@@ -1,8 +1,0 @@
-CREATE TABLE IF NOT EXISTS users (
-    id SERIAL PRIMARY KEY,
-    user_name VARCHAR(256) UNIQUE NOT NULL,
-    first_name VARCHAR NOT NULL,
-    last_name VARCHAR NOT NULL,
-    email VARCHAR UNIQUE NOT NULL,
-    phone VARCHAR NOT NULL
-);
