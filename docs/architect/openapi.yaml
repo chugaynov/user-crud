@@ -178,7 +178,7 @@ paths:
 
       responses:
         200:
-          description: User deleted
+          description: User updated
           content:
             application/json:
               schema:

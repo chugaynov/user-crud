@@ -1,8 +1,12 @@
 from fastapi import APIRouter, HTTPException, Depends
+
 from app.api.user.models import User
 from app.api.user.schemas import UserScheme, UserIdScheme
+from app.api.user.response import UserResponse, UserIdResponse
+
 from sqlalchemy.exc import IntegrityError
 from app.common.database import Database
+
 
 
 router = APIRouter()
@@ -14,7 +18,7 @@ def get_db():
 
 
 @router.post("/user", response_model=UserIdScheme, status_code=201)
-def create_user(user: UserScheme, db=Depends(get_db)):
+def create_user(user: UserScheme, db=Depends(get_db)) -> UserIdResponse:
     try:
         db_user = User(
             userName=user.userName,
@@ -45,7 +49,7 @@ def create_user(user: UserScheme, db=Depends(get_db)):
 
 
 @router.get("/user/{user_id}", response_model=UserScheme)
-def get_user(user_id: int, db=Depends(get_db)):
+def get_user(user_id: int, db=Depends(get_db)) -> UserResponse:
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(
@@ -56,25 +60,15 @@ def get_user(user_id: int, db=Depends(get_db)):
 
 
 @router.put("/user/{user_id}", response_model=UserScheme)
-def update_user(user_id: int, updated_user: UserScheme, db=Depends(get_db)):
+def update_user(user_id: int, updated_user: UserScheme, db=Depends(get_db)) -> UserResponse:
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    if updated_user.userName:
-        user.userName = updated_user.userName
-
-    if updated_user.firstName:
-        user.firstName = updated_user.firstName
-
-    if updated_user.lastName:
-        user.lastName = updated_user.lastName
-
-    if updated_user.email:
-        user.email = updated_user.email
-
-    if updated_user.phone:
-        user.phone = updated_user.phone
+    # Update only existed user parameters
+    user_data = updated_user.model_dump(exclude_unset=True)
+    for key, value in user_data.items():
+        setattr(user, key, value)
 
     db.commit()
     db.refresh(user)
