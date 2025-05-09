@@ -1,10 +1,7 @@
-import pytest
 from fastapi import status
 from fastapi.testclient import TestClient
-from sqlalchemy.orm import Session, sessionmaker
 
 from app.api.user.endpoint import router
-from app.api.user.models import User
 from tests.api.helper import TestApiHelper
 
 # Create test client of FastAPI

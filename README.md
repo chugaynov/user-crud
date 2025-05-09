@@ -55,15 +55,10 @@ kubectl apply -f k8s/configmap.yaml
 kubectl apply -f k8s/secret.yaml
 
 kubectl apply -f k8s/deployment.yaml
-kubectl apply -f k8s/db-migration-job.yaml
 kubectl apply -f k8s/service.yaml
 kubectl apply -f k8s/ingress.yaml
 ```
 
-## Выполните миграции
-```shell
-kubectl apply -f k8s/db-migration-job.yaml
-```
 
 ## Проверьте работу приложения
 ```shell
@@ -111,4 +106,10 @@ PYTHONPATH=src pytest
 # Запуск теста с выводом print из фикстур
 ```shell
 PYTHONPATH=src pytest -s
+```
+
+# Создание миграции ORM
+```shell
+alembic init migrations
+alembic revision --autogenerate -m "Initial migration"
 ```

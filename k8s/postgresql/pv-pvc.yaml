@@ -9,7 +9,7 @@ spec:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   hostPath:
-    path: /mnt/data   # Создать руками с правами 0777, если не появится после наполнения данными БД
+    path: /mnt/data   # Potentially must be created manually with 0777 access rights
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim

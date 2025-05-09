@@ -13,9 +13,34 @@ spec:
       labels:
         app: user-app
     spec:
+      initContainers:
+        - name: migrate-db
+          image: achugaynov/user-crud:latest
+          env:
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: DB_HOST
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: DB_NAME
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: DB_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: DB_PASSWORD
+          command: [ "alembic", "upgrade", "head" ]
       containers:
         - name: user-app
-          image: achugaynov/user-crud:v1.0
+          image: achugaynov/user-crud:latest
           env:
             - name: DB_HOST
               valueFrom:
