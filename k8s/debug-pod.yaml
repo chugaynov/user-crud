@@ -6,7 +6,7 @@ metadata:
 spec:
   containers:
     - name: debug-container
-      image: achugaynov/user-crud:v1.0
+      image: achugaynov/user-crud:latest
       command: ["sleep", "3600"]
       env:
         - name: DB_USER

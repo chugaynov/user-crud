@@ -3,7 +3,7 @@ global:
     auth:
       username: postgres
       password: postgres
-      database: db_user_crud
+      database: appdb
 persistence:
   enabled: true
   storageClass: "standard"
@@ -39,3 +39,4 @@ readReplicas:
     limits:
       memory: "512Mi"
       cpu: "500m"
+

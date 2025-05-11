@@ -1,56 +1,83 @@
-# Docker
+# Инструкция для запуска приложения в K8s
 
-## DockerHub сборка под AMD64
+## DockerHub
+### Сборка приложения под AMD64
 ```shell
 docker login
 docker buildx create --use
-docker buildx build --platform linux/amd64 -t achugaynov/user-crud:v1.0 . --push
+docker buildx build --platform linux/amd64 -t achugaynov/user-crud:v1.2 . --push
 ```
 
-## Установка БД из Helm
-Если _kubectl get storageclass_ не вернул ничего, нужно добавить свой storageclass
+## Установка PostgreSQL из Helm
+### Установка БД
 ```shell
+cd {user-crud-directory-path}
+
+kubectl create namespace user-crud
+
 kubectl apply -f k8s/postgresql/storageclass.yaml
-```
-
-Если динамическое provisioner'ы недоступны, создайте статический PV
-```shell
 kubectl apply -f k8s/postgresql/pv-pvc.yaml
-```
 
-Установка
-```shell
 helm repo add bitnami https://charts.bitnami.com/bitnami
-helm install db bitnami/postgresql -f k8s/postgresql/values.yaml
+helm install db bitnami/postgresql --set image.tag=16 -f k8s/postgresql/values.yaml --namespace user-crud
 ```
 
-Переустановка при внесении изменений в values.yaml
+### Переустановка
+При внесении изменений в values.yaml обновляем БД
 ```shell
-helm upgrade db bitnami/postgresql -f k8s/values.yaml --install
+helm upgrade db bitnami/postgresql -f k8s/postgresql/values.yaml --namespace user-crud
 ```
 
-Удаление
+### Удаление БД
 ```shell
-helm uninstall db
+helm uninstall db --namespace user-crud
+helm list --namespace user-crud
+kubectl delete pvc data-db-postgresql-0 -n user-crud
+```
+
+Так как PV имеет настройку persistentVolumeReclaimPolicy: Retain (для Production) при удалении БД потребуются
+дополнительные манипуляции для удаления PV и PVC.
+```shell
+kubectl get statefulset -n user-crud
+kubectl delete statefulset <statefulset-name> -n user-crud
+```
+
+Проверка PV и PVC
+```shell
+kubectl get pvc data-db-postgresql-0 -n user-crud -o yaml
+kubectl get pv <volume-name> -o yaml
+```
+
+Удаление Finalizers (если они есть)
+```shell
+kubectl patch pvc data-db-postgresql-0 -n user-crud -p '{"metadata":{"finalizers":null}}'
+```
+
+Удаление PVC
+```shell
+kubectl delete pvc data-db-postgresql-0 -n user-crud
+```
+
+Удаление PV (если PVC удален, но PV остался)
+```shell
+kubectl delete pv <volume-name>
+```
+
+Весь набор
+```shell
+helm uninstall db --namespace user-crud
+kubectl delete pvc -n user-crud data-db-postgresql-0
+kubectl delete pv <pv-name>
+kubectl delete namespace user-crud
 ```
 
 
-## Удаление
+## Устновака приложения user-crud
+### Примените манифесты Kubernetes
 ```shell
-helm uninstall db
-helm list
-kubectl delete pvc data-db-postgresql-0 -n default
-```
+cd {user-crud-directory-path}
 
-## Примените манифесты Kubernetes
-```shell
-kubectl create namespace pqsql
-kubectl apply -f postgresql/k8s/storageclass.yaml
-kubectl apply -f postgresql/k8s/pv-pvc.yaml
-helm install db bitnami/postgresql -f postgresql/k8s/values.yaml --install --namespace pqsql
-
-
-kubectl create namespace restfull-crud
+kubectl create namespace user-crud
 kubectl apply -f k8s/configmap.yaml
 kubectl apply -f k8s/secret.yaml
 
@@ -59,57 +86,76 @@ kubectl apply -f k8s/service.yaml
 kubectl apply -f k8s/ingress.yaml
 ```
 
-
-## Проверьте работу приложения
+### Протестировать работу приложения
 ```shell
 newman run postman-collection.json
 ```
+Документация про Postman https://learning.postman.com/docs/tests-and-scripts/write-scripts/test-scripts/
+
+
 
 ## Доступ к БД с локального ПК
+### Туннель
 ```shell
-    kubectl port-forward --namespace pqsql svc/db-postgresql 5432:5432 &
+ kubectl port-forward --namespace user-crud svc/db-postgresql 51432:5432 &
     PGPASSWORD="$POSTGRES_PASSWORD" psql --host 127.0.0.1 -U postgres -d appdb -p 5432
 ```
 
 
-## 
-```shell
-kubectl create namespace pqsql
-kubectl apply -f k8s/storageclass.yaml
-kubectl apply -f k8s/pv-pvc.yaml
-helm upgrade db bitnami/postgresql -f k8s/values.yaml --install --namespace pqsql
-```
-
-PersistentVolume — это объект Kubernetes, который предоставляет физическое хранилище для данных.
-PersistentVolumeClaim — это запрос на использование хранилища. PVC привязывается к конкретному PV.
-```shell
-kubectl apply -f k8s/pv-pvc.yaml
-```
-
-
-## 
-```shell
-```
-
-
-# Тесты через Postman
-Документация здесь https://learning.postman.com/docs/tests-and-scripts/write-scripts/test-scripts/
-```shell
-newman run otus-app-health.postman_collection.json
-```
-
-# Запуск теста
+## Заметки
+### Запуск тестов приложения
 ```shell
 PYTHONPATH=src pytest
 ```
 
-# Запуск теста с выводом print из фикстур
+### Запуск тестов приложения с выводом print из фикстур
 ```shell
 PYTHONPATH=src pytest -s
 ```
 
-# Создание миграции ORM
+### Создаение пользователя локальной БД
+```shell
+brew services start postgresql
+createuser --superuser postgres
+psql -U postgres -c "ALTER USER postgres WITH PASSWORD 'postgres';"
+```
+
+Проверка подключения
+```shell
+psql -h localhost -U postgres -d postgres
+```
+
+Проверка списка пользователей в БД
+```shell
+psql -h localhost -d postgres
+\du
+```
+
+Экспорт переменных окружения для подключения к БД приложению
+```shell
+export DB_HOST=localhost
+export DB_USER=postgres
+export DB_PASSWORD=postgres
+export DB_NAME=appdb
+```
+
+### Создание миграции ORM
+Инициализация (один раз при создании проекта)
 ```shell
 alembic init migrations
+```
+
+Создание актуальной версии миграции согласно текущей схеме ORM
+```shell
 alembic revision --autogenerate -m "Initial migration"
 ```
+
+Применить миграцию в БД
+```shell
+alembic upgrade head
+```
+
+
+### Памятка
+* PersistentVolume — это объект Kubernetes, который предоставляет физическое хранилище для данных.
+* PersistentVolumeClaim — это запрос на использование хранилища. PVC привязывается к конкретному PV.

@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: app-config
-  namespace: restfull-crud
+  namespace: user-crud
 data:
-  DB_HOST: "db-postgresql.pqsql.svc.cluster.local"
-  DB_NAME: "db_user_crud"
+  DB_HOST: "db-postgresql.user-crud.svc.cluster.local"
+  DB_NAME: "appdb"

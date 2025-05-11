@@ -13,7 +13,7 @@ class DbSettings(BaseSettings):
     USER: str = "postgres"
     PASSWORD: str = "postgres"
     HOST: str = "localhost"
-    NAME: str = "db_user_crud"
+    NAME: str = "appdb"
 
 
 class SentrySettings(BaseSettings):
