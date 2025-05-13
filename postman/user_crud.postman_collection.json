@@ -1,0 +1,493 @@
+{
+	"info": {
+		"_postman_id": "89c9d2a2-4c3a-4020-a8b3-bf1a82e34feb",
+		"name": "OTUS: 2. Restfull CRUD",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "31272678"
+	},
+	"item": [
+		{
+			"name": "CREATE User (success)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.globals.set(\"userId\", pm.response.json().id);",
+							"pm.test(\"HTTP 201 (Created)\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"pm.test(\"ID exists\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.id);",
+							"});",
+							"pm.test(\"ID is number\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.id).match(/\\d+/);",
+							"});",
+							"pm.test(\"ID greater than 0\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.id).greaterThan(0);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"userName\":\"achugaynov\",\n    \"firstName\":\"Aleksandr\",\n    \"lastName\":\"Chugaynov\",\n    \"email\":\"achugaynov@gmail.com\",\n    \"phone\":\"+79061122333\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://arch.homework/user",
+					"protocol": "http",
+					"host": [
+						"arch",
+						"homework"
+					],
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CREATE User (duplicate)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"HTTP 409 (Conflict)\", function () {",
+							"    pm.response.to.have.status(409);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"userName\":\"achugaynov\",\n    \"firstName\":\"Aleksandr\",\n    \"lastName\":\"Chugaynov\",\n    \"email\":\"achugaynov@gmail.com\",\n    \"phone\":\"+79061122333\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://arch.homework/user",
+					"protocol": "http",
+					"host": [
+						"arch",
+						"homework"
+					],
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "READ User (success)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"HTTP 200 (OK)\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Valid JSON\", function () {",
+							"    let isValid = true;",
+							"    ",
+							"    const jsonData = pm.response.json();",
+							"    const user = {",
+							"        \"userName\": \"string\",",
+							"        \"firstName\": \"string\",",
+							"        \"lastName\": \"string\",",
+							"        \"email\": \"string\",",
+							"        \"phone\": \"string\"",
+							"    };",
+							"    ",
+							"    const userKeys = Object.keys(user);",
+							"    const responseKeys = Object.keys(jsonData);",
+							"    ",
+							"    if (userKeys.length !== responseKeys.length ) {",
+							"        pm.expect(isValid).equal(false);",
+							"        return;",
+							"    }",
+							"",
+							"    for (let i = 0; i < responseKeys.length; i++) {",
+							"        let attr = responseKeys[i];",
+							"        if (typeof user[attr] === 'undefined') {",
+							"            pm.expect(isValid).equal(false);",
+							"            return;",
+							"        }",
+							"    }",
+							"",
+							"    pm.expect(isValid).equal(true);",
+							"});",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://arch.homework/user/{{userId}}",
+					"protocol": "http",
+					"host": [
+						"arch",
+						"homework"
+					],
+					"path": [
+						"user",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "READ User (not found)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"HTTP 404 (Not found)\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://arch.homework/user/9999",
+					"protocol": "http",
+					"host": [
+						"arch",
+						"homework"
+					],
+					"path": [
+						"user",
+						"9999"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UPDATE User (success)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"HTTP 200 (OK)\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.sendRequest({",
+							"    url: 'http://arch.homework/user/' + pm.globals.get('userId'),",
+							"    method: 'GET',",
+							"    header: {",
+							"        'Content-Type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify({})",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.test(\"Updated user data is valid\", function () {",
+							"        let isValid = true;",
+							"",
+							"        if (err) {",
+							"            pm.expect(isValid).equal(false);",
+							"        }",
+							"        ",
+							"        const jsonData = res.json();",
+							"        const user = {",
+							"        \"userName\": \"achugaynov\",",
+							"        \"firstName\": \"Ivan\",",
+							"        \"lastName\": \"Ivanov\",",
+							"        \"email\": \"achugaynov@gmail.com\",",
+							"        \"phone\": \"+79061122333\"",
+							"        };",
+							"        ",
+							"        ",
+							"        const userKeys = Object.keys(user);",
+							"        const responseKeys = Object.keys(jsonData);",
+							"        ",
+							"        if (userKeys.length !== responseKeys.length ) {",
+							"            pm.expect(isValid).equal(false);",
+							"            return;",
+							"        }",
+							"",
+							"        for (let i = 0; i < userKeys.length; i++) {",
+							"            let prop = userKeys[i];",
+							"            if (user[prop] !== jsonData[prop]) {",
+							"                pm.expect(isValid).equal(false);",
+							"            }",
+							"        }",
+							"",
+							"        pm.expect(isValid).equal(true);",
+							"    });",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"userName\":\"achugaynov\",\n    \"firstName\":\"Ivan\",\n    \"lastName\":\"Ivanov\",\n    \"email\":\"achugaynov@gmail.com\",\n    \"phone\":\"+79061122333\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://arch.homework/user/{{userId}}",
+					"protocol": "http",
+					"host": [
+						"arch",
+						"homework"
+					],
+					"path": [
+						"user",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UPDATE User (not found)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"HTTP 404 (not found)\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"userName\":\"ivanov\",\n    \"firstName\":\"Ivan\",\n    \"lastName\":\"Ivanov\",\n    \"email\":\"achugaynov@gmail.com\",\n    \"phone\":\"+74012223344\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://arch.homework/user/9999",
+					"protocol": "http",
+					"host": [
+						"arch",
+						"homework"
+					],
+					"path": [
+						"user",
+						"9999"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE User (success)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"HTTP 204 (No content)\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://arch.homework/user/{{userId}}",
+					"protocol": "http",
+					"host": [
+						"arch",
+						"homework"
+					],
+					"path": [
+						"user",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE User (not found)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"HTTP 404 (Not found)\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://arch.homework/user/{{userId}}",
+					"protocol": "http",
+					"host": [
+						"arch",
+						"homework"
+					],
+					"path": [
+						"user",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HEALTH Check",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"HTTP 200 (OK)\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Status is OK\", function () {",
+							"    pm.response.to.have.jsonBody({\"status\":\"OK\"});",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://arch.homework/health",
+					"protocol": "http",
+					"host": [
+						"arch",
+						"homework"
+					],
+					"path": [
+						"health"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

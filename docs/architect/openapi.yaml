@@ -8,7 +8,7 @@ info:
     email: achugaynov@gmail.com
 servers:
   - description: Server for testing
-    url: http://arch-homework.kalk.pro/
+    url: http://arch.homework/
 tags:
   - name: user
     description: Create/Read/Update/Delete user operations.
@@ -219,9 +219,6 @@ components:
     User:
       type: object
       properties:
-        id:
-          type: integer
-          format: int64
         userName:
           type: string
           maxLength: 256

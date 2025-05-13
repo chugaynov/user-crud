@@ -11,5 +11,6 @@ class UserScheme(InternalModel):
     phone: str = Field(title="Phone number", examples=["+79123456789"], max_length=256)
 
 
+
 class UserIdScheme(InternalModel):
     id: int = Field(title="User unique ID", examples=[23])

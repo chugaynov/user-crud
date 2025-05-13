@@ -2,7 +2,6 @@ from fastapi import APIRouter, HTTPException, Depends
 
 from app.api.user.models import User
 from app.api.user.schemas import UserScheme, UserIdScheme
-from app.api.user.response import UserResponse, UserIdResponse
 
 from sqlalchemy.exc import IntegrityError
 from app.common.database import Database
@@ -18,7 +17,7 @@ def get_db():
 
 
 @router.post("/user", response_model=UserIdScheme, status_code=201)
-def create_user(user: UserScheme, db=Depends(get_db)) -> UserIdResponse:
+def create_user(user: UserScheme, db=Depends(get_db)) -> UserIdScheme:
     try:
         db_user = User(
             userName=user.userName,
@@ -49,7 +48,7 @@ def create_user(user: UserScheme, db=Depends(get_db)) -> UserIdResponse:
 
 
 @router.get("/user/{user_id}", response_model=UserScheme)
-def get_user(user_id: int, db=Depends(get_db)) -> UserResponse:
+def get_user(user_id: int, db=Depends(get_db)) -> UserScheme:
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(
@@ -60,7 +59,7 @@ def get_user(user_id: int, db=Depends(get_db)) -> UserResponse:
 
 
 @router.put("/user/{user_id}", response_model=UserScheme)
-def update_user(user_id: int, updated_user: UserScheme, db=Depends(get_db)) -> UserResponse:
+def update_user(user_id: int, updated_user: UserScheme, db=Depends(get_db)) -> UserScheme:
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")

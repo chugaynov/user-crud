@@ -38,7 +38,7 @@ class TestUserApi(TestApiHelper):
         assert "email" in response_data and response_data["email"] == db_user.email
         assert "phone" in response_data and response_data["phone"] == db_user.phone
 
-    def test_user_not_found(self, db_session):
+    def test_read_user_not_found(self, db_session):
         # Get user data via GET request
         response = self.client.get(f"/user/1")
 

@@ -33,7 +33,7 @@ class TestUserApi(TestApiHelper):
         db_user = db_session.query(User).filter_by(id=db_user.id).first()
         assert db_user is None
 
-    def test_user_not_found(self, db_session):
+    def test_delete_user_not_found(self, db_session):
         response = self.client.delete(f"/user/1")
         assert response.status_code == status.HTTP_404_NOT_FOUND
 

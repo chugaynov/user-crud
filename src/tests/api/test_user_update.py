@@ -53,7 +53,7 @@ class TestUserApi(TestApiHelper):
         assert db_user.email == "john.doe@example.com"
         assert db_user.phone == "1234567890"
 
-    def test_user_not_found(self, db_session):
+    def test_update_user_not_found(self, db_session):
         user_data = {
             "userName": "test_user",
             "firstName": "John",

@@ -1,0 +1,66 @@
+newman
+
+OTUS: 2. Restfull CRUD
+
+→ CREATE User (success)
+  POST http://arch.homework/user [201 Created, 145B, 272ms]
+  ✓  HTTP 201 (Created)
+  ✓  ID exists
+  ✓  ID is number
+  ✓  ID greater than 0
+
+→ CREATE User (duplicate)
+  POST http://arch.homework/user [409 Conflict, 198B, 150ms]
+  ✓  HTTP 409 (Conflict)
+
+→ READ User (success)
+  GET http://arch.homework/user/23 [200 OK, 259B, 125ms]
+  ✓  HTTP 200 (OK)
+  ✓  Valid JSON
+
+→ READ User (not found)
+  GET http://arch.homework/user/9999 [404 Not Found, 166B, 119ms]
+  ✓  HTTP 404 (Not found)
+
+→ UPDATE User (success)
+  PUT http://arch.homework/user/23 [200 OK, 251B, 128ms]
+  ✓  HTTP 200 (OK)
+  GET http://arch.homework/user/23 [200 OK, 251B, 131ms]
+  ✓  Updated user data is valid
+
+→ UPDATE User (not found)
+  PUT http://arch.homework/user/9999 [404 Not Found, 166B, 122ms]
+  ✓  HTTP 404 (not found)
+
+→ DELETE User (success)
+  DELETE http://arch.homework/user/23 [204 No Content, 120B, 134ms]
+  ✓  HTTP 204 (No content)
+
+→ DELETE User (not found)
+  DELETE http://arch.homework/user/23 [404 Not Found, 166B, 125ms]
+  ✓  HTTP 404 (Not found)
+
+→ HEALTH Check
+  GET http://arch.homework/health [200 OK, 147B, 114ms]
+  ✓  HTTP 200 (OK)
+  ✓  Status is OK
+
+┌─────────────────────────┬────────────────────┬────────────────────┐
+│                         │           executed │             failed │
+├─────────────────────────┼────────────────────┼────────────────────┤
+│              iterations │                  1 │                  0 │
+├─────────────────────────┼────────────────────┼────────────────────┤
+│                requests │                 10 │                  0 │
+├─────────────────────────┼────────────────────┼────────────────────┤
+│            test-scripts │                  9 │                  0 │
+├─────────────────────────┼────────────────────┼────────────────────┤
+│      prerequest-scripts │                  0 │                  0 │
+├─────────────────────────┼────────────────────┼────────────────────┤
+│              assertions │                 15 │                  0 │
+├─────────────────────────┴────────────────────┴────────────────────┤
+│ total run duration: 1574ms                                        │
+├───────────────────────────────────────────────────────────────────┤
+│ total data received: 527B (approx)                                │
+├───────────────────────────────────────────────────────────────────┤
+│ average response time: 142ms [min: 114ms, max: 272ms, s.d.: 44ms] │
+└───────────────────────────────────────────────────────────────────┘

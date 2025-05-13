@@ -155,6 +155,24 @@ alembic revision --autogenerate -m "Initial migration"
 alembic upgrade head
 ```
 
+### Туннель в K8s БД
+```shell
+kubectl port-forward --namespace user-crud svc/db-postgresql 51432:5432 &              
+    PGPASSWORD="$POSTGRES_PASSWORD" psql --host 127.0.0.1 -U postgres -d appdb -p 5432
+```
+
+Сбросить id
+```postgresql
+ALTER SEQUENCE users_id_seq RESTART;
+```
+
+
+### Запуск тестов Postman
+Документация здесь https://learning.postman.com/docs/tests-and-scripts/write-scripts/test-scripts/
+```shell
+newman run postman/user_crud.postman_collection.json > user_crud.postman_collection.result.txt
+```
+
 
 ### Памятка
 * PersistentVolume — это объект Kubernetes, который предоставляет физическое хранилище для данных.
