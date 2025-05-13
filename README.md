@@ -5,7 +5,7 @@
 ```shell
 docker login
 docker buildx create --use
-docker buildx build --platform linux/amd64 -t achugaynov/user-crud:v1.2 . --push
+docker buildx build --platform linux/amd64 -t achugaynov/user-crud:v1.3 . --push
 ```
 
 ## Установка PostgreSQL из Helm

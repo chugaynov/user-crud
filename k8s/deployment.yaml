@@ -15,7 +15,7 @@ spec:
     spec:
       initContainers:
         - name: migrate-db
-          image: achugaynov/user-crud:v1.2
+          image: achugaynov/user-crud:v1.3
           env:
             - name: DB_HOST
               valueFrom:
@@ -40,7 +40,7 @@ spec:
           command: [ "alembic", "upgrade", "head" ]
       containers:
         - name: user-app
-          image: achugaynov/user-crud:v1.2
+          image: achugaynov/user-crud:v1.3
           env:
             - name: DB_HOST
               valueFrom:
