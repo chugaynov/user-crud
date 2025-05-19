@@ -1,0 +1,48 @@
+enabled: true
+
+persistence:
+  enabled: false
+  size: 100Mi
+  storageClass: standard
+  volumeName: postgres-pv
+  path: /mnt/data
+
+storageClass:
+  enabled: false
+  name: standard
+  provisioner: kubernetes.io/no-provisioner
+  volumeBindingMode: WaitForFirstConsumer
+
+global:
+  postgresql:
+    auth:
+      username: postgres
+      password: postgres
+      database: appdb
+
+volumePermissions:
+  enabled: true
+
+primary:
+  podSecurityContext:
+    enabled: true
+    fsGroup: 1001
+  containerSecurityContext:
+    enabled: true
+    runAsUser: 1001
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "500m"
+    limits:
+      memory: "1Gi"
+      cpu: "1"
+
+readReplicas:
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "250m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"

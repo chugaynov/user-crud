@@ -1,0 +1,36 @@
+namespace: user-crud-helm
+
+image:
+  repository: achugaynov/user-crud
+  tag: v1.3
+
+containerPort: 8080
+
+configMap:
+  name: app-config
+
+secret:
+  name: db-secret
+  data:
+    dbUser: cG9zdGdyZXM=
+    dbPassword: cG9zdGdyZXM=
+
+deployment:
+  name: user-app
+  replicas: 2
+  appLabel: user-app
+
+service:
+  name: user-service
+  port: 80
+  type: ClusterIP
+
+ingress:
+  name: user-ingress
+  class: nginx
+  host1: arch.homework
+  host2: arch-homework.kalk.pro
+
+postgresql:
+  host: "db-postgresql.{{ .Values.namespace }}.svc.cluster.local"
+  dbname: "appdb"
