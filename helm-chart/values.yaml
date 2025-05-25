@@ -1,4 +1,4 @@
-namespace: user-crud-helm
+#namespace: user-crud-helm
 
 image:
   repository: achugaynov/user-crud
@@ -28,9 +28,30 @@ service:
 ingress:
   name: user-ingress
   class: nginx
-  host1: arch.homework
-  host2: arch-homework.kalk.pro
+  host1: arch1.homework
+  host2: arch1-homework.kalk.pro
+
+postgresqlStorageClass:
+  enabled: false
+
+postgresqlPvPvc:
+  enabled: true
 
 postgresql:
-  host: "db-postgresql.{{ .Values.namespace }}.svc.cluster.local"
-  dbname: "appdb"
+  enabled: true
+  image:
+    tag: "16"
+  auth:
+    username: "postgres"
+    password: "postgres"
+    database: "appdb"
+  storageClass: "standard"
+  size: 100Mi
+  primary:
+    podSecurityContext:
+      enabled: true
+      fsGroup: 1001  # Owner data group
+    containerSecurityContext:
+      enabled: true
+      runAsUser: 1001  # Container user group
+

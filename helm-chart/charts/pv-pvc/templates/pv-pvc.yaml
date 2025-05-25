@@ -1,9 +1,8 @@
 {{- if .Values.persistence.enabled }}
----
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: {{ .Values.persistence.volumeName }}
+  name: postgresql-pv-{{ .Release.Name | default "default" }}
 spec:
   capacity:
     storage: {{ .Values.persistence.size }}
@@ -16,8 +15,8 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: data-db-postgresql-0
-  namespace: {{ .Values.namespace | default "default" }}
+  name: data-{{ .Release.Name | default "default" }}-postgresql-0
+  namespace: {{ .Release.Namespace | default "default" }}
 spec:
   accessModes:
     - ReadWriteOnce
@@ -25,5 +24,5 @@ spec:
     requests:
       storage: {{ .Values.persistence.size }}
   storageClassName: ""
-  volumeName: {{ .Values.persistence.volumeName }}
+  volumeName: postgresql-pv-{{ .Release.Name | default "default" }}
 {{- end }}

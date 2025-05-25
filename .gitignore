@@ -11,3 +11,5 @@ generated
 coverage.xml
 *.sw?
 /tags
+#/helm-chart/Chart.lock
+#/helm-chart/*.tgz

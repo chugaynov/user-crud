@@ -1,6 +1,12 @@
 dependencies:
-- name: postgresql
-  repository: file://charts/postgresql
+- name: postgresqlStorageClass
+  repository: file://charts/storage
   version: 0.1.0
-digest: sha256:1df990b6efcdad851908e414b725bc44c4436e282cc13bd6b78c5714b376dfc4
-generated: "2025-05-19T19:05:47.045237+03:00"
+- name: postgresqlPvPvc
+  repository: file://charts/pv-pvc
+  version: 0.1.0
+- name: postgresql
+  repository: https://charts.bitnami.com/bitnami
+  version: 12.5.6
+digest: sha256:4282226e2043ed55a666164b5bb26748b95318f700121185180dfd9109cdc198
+generated: "2025-05-22T08:59:30.766113+03:00"

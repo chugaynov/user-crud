@@ -2,9 +2,23 @@ apiVersion: v2
 name: myapp
 version: 0.1.0
 dependencies:
-  - name: postgresql
+  - name: postgresqlStorageClass
     version: 0.1.0
-    repository: file://charts/postgresql
-    condition: postgresql.enabled
+    repository: file://charts/storage
+    condition: postgresqlStorageClass.enabled
     tags:
       - db-setup
+
+  - name: postgresqlPvPvc
+    version: 0.1.0
+    repository: file://charts/pv-pvc
+    condition: postgresqlStoragePvPvc.enabled
+    tags:
+      - db-setup
+
+  - name: postgresql
+    version: 12.5.6
+    repository: https://charts.bitnami.com/bitnami
+    condition: postgresql.enabled
+    tags:
+      - database

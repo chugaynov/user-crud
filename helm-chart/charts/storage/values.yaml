@@ -1,24 +1,8 @@
-enabled: true
-
-persistence:
-  enabled: false
-  size: 100Mi
-  storageClass: standard
-  volumeName: postgres-pv
-  path: /mnt/data
-
 storageClass:
-  enabled: false
+  enabled: true
   name: standard
   provisioner: kubernetes.io/no-provisioner
   volumeBindingMode: WaitForFirstConsumer
-
-global:
-  postgresql:
-    auth:
-      username: postgres
-      password: postgres
-      database: appdb
 
 volumePermissions:
   enabled: true

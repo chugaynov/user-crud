@@ -73,6 +73,11 @@ helm lint helm-chart
 helm template helm-chart
 ```
 
+## Проверить шаблон (сгененировать для визуального контроля)
+```shell
+helm template rel1 helm-chart -n user-crud-helm
+```
+
 ## Установить зависимости
 ```shell
 helm dependency build helm-chart
@@ -80,5 +85,22 @@ helm dependency build helm-chart
 
 ## Установка
 ```shell
-helm install myrelease helm-chart
+helm install rel1 helm-chart -n user-crud-helm --create-namespace
 ```
+
+## Удаление
+```shell
+helm uninstall rel1 -n user-crud-helm
+```
+
+
+
+## Ручное удаление при неудачной инсталяции
+```shell
+kubectl delete secret db-secret -n user-crud-helm
+kubectl delete configmap app-config -n user-crud-helm
+kubectl delete service user-service -n user-crud-helm
+kubectl delete deployment user-app -n user-crud-helm
+```
+
+helm install rel.3 helm-chart -n user-crud-helm
